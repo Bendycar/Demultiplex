@@ -11,7 +11,7 @@ To begin, we read each of our four input files 4 lines at a time, giving us one 
 FUNCTIONS:
 
 Reverse complement(DNA: str) -> str
-```Takes valid DNA string (use validate base seq?), returns its reverse complement
+Takes valid DNA string (use validate base seq?), returns its reverse complement
 
 Append indices(Header: str, Index1: str, Index2: str) -> Modified Header: str
 Extracts just indices from read 2 and read 3 (index 1 and index 2), appends them to the end of the given header. Modifies header in place.
@@ -24,7 +24,7 @@ Takes in full quality score line, uses convert phred function to calculate each 
 
 PSEUDOCODE:
 
-Takes arguments through argparse: R1.fq, R2.fq, R3.fq, R4.fq, q score threshold (int), matched index.txt
+```Takes arguments through argparse: R1.fq, R2.fq, R3.fq, R4.fq, q score threshold (int), matched index.txt
 Creates set from matched index.txt
 unknown_dict = {unknown: 0} #Basically just needs to be a counter, but I'm making it a dictionary for consistency with the others
 hopped_dict = {}
@@ -48,5 +48,5 @@ while True:
     else:
         write to appropriate index file
         increment counter in matched dictionary with key as the two indices or adds index pair if not in dictionary
-    
+    ```
 
