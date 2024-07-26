@@ -26,6 +26,8 @@ PSEUDOCODE:
 
 ```Takes arguments through argparse: R1.fq, R2.fq, R3.fq, R4.fq, q score threshold (int), matched index.txt
 Creates set from matched index.txt
+Creates reverse complement dictionary (keys = index, values = reverse complement)
+
 unknown_dict = {unknown: 0} #Basically just needs to be a counter, but I'm making it a dictionary for consistency with the others
 hopped_dict = {}
 index_dict = {}
@@ -34,19 +36,23 @@ while True:
     if file is empty:
         break
     opens all 4 files concurrently
-    reads 4 lines from each file, appends indices to headers, appends all lines to one list for each file
+    reads 4 lines from each file 
+    append_indices function
+    appends all lines to one list for each file
 
-    if either index not in set of indices:
-        write biological reads to appropriate unknown file
-        increment counter in unknown dictionary
+    if index 1 or reverse complement index 2 (obtained from dictionary) not in set of indices:
+        write biological reads to unknown file (file name = "unknown")
+        increment counter in unknown dictionary 
     elif either average qscore of index files below threshold:
-        write biological reads to appropriate unknown file
+        write biological reads to unknown file
         increment counter in unknown dictionary
     elif reverse complement of index 2 is not equal to index 1:
-        write biological reads to appropriate hopped file
+        write biological reads to appropriate hopped file (file name = {index}_hopped)
         increment counter in hopped dictionary with key as the two indices or adds index pair if not in dictionary
-    else:
-        write to appropriate index file
+    elif reverse complement of index 2 == index 1:
+        write to appropriate index file (file name = {index}_matched)
         increment counter in matched dictionary with key as the two indices or adds index pair if not in dictionary
+    else:
+        Nothing should be in here, something has gone horribly wrong. Write all records to error file. 
     ```
 
