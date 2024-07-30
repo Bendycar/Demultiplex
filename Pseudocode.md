@@ -1,3 +1,5 @@
+NOTE: Open all files at the start, close all files at the end
+
 DEFINING THE PROBLEM:
 We are given 24 biological samples. Each of these have been prepared in some different way -- some have been given a treatment, some are control groups, some are prepared in the same way by different students -- whatever the reason, we want to sequence them all together (for the sake of efficiency) then computationally separate them by sample at the end. To accomplish this, every sample is attached to an index to keep track of its origin. Each DNA fragment is read twice -- once from the 3' end, once from the 5' end. We will call these Biological Read 1 and Biological Read 2. In a perfect world, both Read 1 and Read 2 will have the same index -- however, it is possible that some indexes will "hop" and be replaced by a different index. It is also possible that the index will be improperly copied, resulting in an unknown identity, and it is possible that some reads will be of low enough quality that we want to reject them as well. The goal of this program is to separate our data into 52 files: 24 files for Read 1, 24 files for Read 2, 2 unknown files, and 2 hopped files.
 

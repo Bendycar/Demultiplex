@@ -24,3 +24,36 @@ This output:
 Showing that each file had the same number of lines; approximately 1.45 billion lines. This means we are dealing with 
 
     1,452,986,940 / 4 = 363,246,735 reads. 
+
+7/30/24:
+
+We've talked at length about read 2 and read 3 representing indices 1 and 2, where index 2 is the reverse complement of index 1, but I quickly looked at the head of these files and manually compared them, confirming that the sequence lines are indeed reverse complements of each other:
+
+    $ zcat 1294_S1_L008_R2_001.fastq.gz | head
+    $ zcat 1294_S1_L008_R3_001.fastq.gz | head
+
+To determine the length of the reads from each file, I took a sample of the first 10 records in hopes that this would be representative of all the lengths:
+
+    $ zcat 1294_S1_L008_R3_001.fastq.gz | head -40 | sed -n 2~4p | awk '{print length($0)}'
+    $ zcat 1294_S1_L008_R3_001.fastq.gz | head -40 | sed -n 2~4p | awk '{print length($0)}'
+    $ zcat 1294_S1_L008_R3_001.fastq.gz | head -40 | sed -n 2~4p | awk '{print length($0)}'
+    $ zcat 1294_S1_L008_R3_001.fastq.gz | head -40 | sed -n 2~4p | awk '{print length($0)}'
+
+Doing this revealed that the index sequences were 8 characters long, and the biological reads were 101 characters. 
+
+Finally, to assess if Phred score is encoding with ASCII + 33 or + 64, I searched for characters that only exist in one type of encoding.
+
+    $ zcat 1294_S1_L008_R1_001.fastq.gz | head -40 | sed -n 4~4p | grep '#'
+
+Repeating this command for all files revealed that the "#" character exists in all the quality score lines, meaning the encoding must be Phred +33.
+
+Next, I created my unit test files. To do this I essentially just took the first 5 records from each record to get the correct formatting, then manipulated the data to represent all possible outcomes of reads:
+
+Read 1: Unknown with N's
+Read 2: Unknown with matched but invalid index
+Read 3: Mismatched but valid
+Read 4: Mismatched and invalid
+Read 5: Matched
+
+The last thing I did today was write my python script for part 1 of the assignment, which creates figures for the average quality distribution of each read. I ran this sbatch script:
+
