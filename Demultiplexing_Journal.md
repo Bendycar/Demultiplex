@@ -57,3 +57,9 @@ Read 5: Matched
 
 The last thing I did today was write my python script for part 1 of the assignment, which creates figures for the average quality distribution of each read. I ran this sbatch script:
 
+
+7/31/24:
+
+Had to fix a few errors in my python script -- I very lazily extracted the title of each ride ("R1", "R2", etc) using index slicing, but this failed when I moved from text files to the real deal. I changed to using .split, which should be much safer, then ran the script again.
+
+I also moved on to the questions of part 1, and used some bash commands to answer them.

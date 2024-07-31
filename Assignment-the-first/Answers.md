@@ -12,8 +12,15 @@
 
 2. Per-base NT distribution
     1. Use markdown to insert your 4 histograms here.
-    2. **YOUR ANSWER HERE**
-    3. **YOUR ANSWER HERE**
+    2. I think I will plan on eliminating all index reads with a mean quality score less than 30. The primary rationale for such a high standard is that, given the size of our data set, I would rather throw away good data than keep bad data. I also considered the Hamming Distance between our indices, which was chosen to be relatively high. Considering that a QScore of 30 represents a .1% chance of error, I think the multiplicative probability of several base pairs switching on BOTH READS with this chance of error is quite low. 
+
+    For downstream analysis, I would be less stringent in my cutoff value for biological reads. However, Illumina's website suggests a QScore cutoff of 30, which seems fairly reasonable to me. 
+
+    3. Bash one liner: 
+        $ ls -1 | grep -E "R[2-3]" | while read line; do zcat $line | sed -n 2~4p | grep -c "N";done
+    
+    R2: 3976613
+    R3: 3328051
     
 ## Part 2
 1. Define the problem
