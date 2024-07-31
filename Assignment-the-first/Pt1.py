@@ -30,15 +30,20 @@ with gzip.open(read, mode="rt") as fh1:
     read_qscores = read_qscores / (line_count/4)
 
 
-x = range(101)
+x = range(read_length)
 y = read_qscores
+split_file = read.split('/') #This and next 3 lines just extracts only "R1", "R2", etc in a very convoluted way to use in the title of the plots
+just_fastq = split_file[5]
+just_fastq = just_fastq.split('_')
+title = just_fastq[3]
+
 
 fig, ax = plt.subplots()             
 ax.plot(x,y) 
 ax.set_xlabel("Nucleotide position")
 ax.set_ylabel("Average Q-Score across all reads")
-plt.title(f"Average Q-Score at each nucleotide position across all reads of {read[13:-13]}")
-plt.savefig(f"{read[13:-13]}_distribution.png") #Should be 'R1_distribution.png' etc
+plt.title(f"Average Q-Score at each nucleotide position across all reads of {title}")
+plt.savefig(f"{title}_distribution.png") #Should be 'R1_distribution.png' etc
         
 
 

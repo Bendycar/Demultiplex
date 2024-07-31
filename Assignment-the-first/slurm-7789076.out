@@ -1,1 +1,77 @@
 /var/spool/slurm/job7789076/slurm_script: line 8: usr/bin/time: No such file or directory
+Traceback (most recent call last):
+  File "/gpfs/projects/bgmp/bcarr/bioinfo/Bi622/Demultiplex/Assignment-the-first/./Pt1.py", line 41, in <module>
+    plt.savefig(f"{read[13:-13]}_distribution.png") #Should be 'R1_distribution.png' etc
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/pyplot.py", line 1228, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/figure.py", line 3395, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/backend_bases.py", line 2204, in print_figure
+    result = print_method(
+             ^^^^^^^^^^^^^
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/backend_bases.py", line 2054, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+                                                                 ^^^^^
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/backends/backend_agg.py", line 496, in print_png
+    self._print_pil(filename_or_obj, "png", pil_kwargs, metadata)
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/backends/backend_agg.py", line 445, in _print_pil
+    mpl.image.imsave(
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/image.py", line 1676, in imsave
+    image.save(fname, **pil_kwargs)
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/PIL/Image.py", line 2456, in save
+    fp = builtins.open(filename, "w+b")
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/gpfs/projects/bgmp/bcarr/bioinfo/Bi622/Demultiplex/Assignment-the-first/p/shared/2017_sequencing/1294_S1_L008_R1_distribution.png'
+Traceback (most recent call last):
+  File "/gpfs/projects/bgmp/bcarr/bioinfo/Bi622/Demultiplex/Assignment-the-first/./Pt1.py", line 37, in <module>
+    ax.plot(x,y) 
+    ^^^^^^^^^^^^
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/axes/_axes.py", line 1779, in plot
+    lines = [*self._get_lines(self, *args, data=data, **kwargs)]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/axes/_base.py", line 296, in __call__
+    yield from self._plot_args(
+               ^^^^^^^^^^^^^^^^
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/axes/_base.py", line 486, in _plot_args
+    raise ValueError(f"x and y must have same first dimension, but "
+ValueError: x and y must have same first dimension, but have shapes (101,) and (8,)
+Traceback (most recent call last):
+  File "/gpfs/projects/bgmp/bcarr/bioinfo/Bi622/Demultiplex/Assignment-the-first/./Pt1.py", line 37, in <module>
+    ax.plot(x,y) 
+    ^^^^^^^^^^^^
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/axes/_axes.py", line 1779, in plot
+    lines = [*self._get_lines(self, *args, data=data, **kwargs)]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/axes/_base.py", line 296, in __call__
+    yield from self._plot_args(
+               ^^^^^^^^^^^^^^^^
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/axes/_base.py", line 486, in _plot_args
+    raise ValueError(f"x and y must have same first dimension, but "
+ValueError: x and y must have same first dimension, but have shapes (101,) and (8,)
+Traceback (most recent call last):
+  File "/gpfs/projects/bgmp/bcarr/bioinfo/Bi622/Demultiplex/Assignment-the-first/./Pt1.py", line 41, in <module>
+    plt.savefig(f"{read[13:-13]}_distribution.png") #Should be 'R1_distribution.png' etc
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/pyplot.py", line 1228, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/figure.py", line 3395, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/backend_bases.py", line 2204, in print_figure
+    result = print_method(
+             ^^^^^^^^^^^^^
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/backend_bases.py", line 2054, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+                                                                 ^^^^^
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/backends/backend_agg.py", line 496, in print_png
+    self._print_pil(filename_or_obj, "png", pil_kwargs, metadata)
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/backends/backend_agg.py", line 445, in _print_pil
+    mpl.image.imsave(
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/matplotlib/image.py", line 1676, in imsave
+    image.save(fname, **pil_kwargs)
+  File "/projects/bgmp/bcarr/miniforge3/lib/python3.12/site-packages/PIL/Image.py", line 2456, in save
+    fp = builtins.open(filename, "w+b")
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/gpfs/projects/bgmp/bcarr/bioinfo/Bi622/Demultiplex/Assignment-the-first/p/shared/2017_sequencing/1294_S1_L008_R4_distribution.png'

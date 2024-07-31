@@ -5,7 +5,7 @@
 #SBATCH -c 4
 #SBATCH --mem=16G
 
-usr/bin/time -v 
+/usr/bin/time -v 
 
 ./Pt1.py -l 101 -r /projects/bgmp/shared/2017_sequencing/1294_S1_L008_R1_001.fastq.gz
 ./Pt1.py -l 8 -r /projects/bgmp/shared/2017_sequencing/1294_S1_L008_R2_001.fastq.gz
