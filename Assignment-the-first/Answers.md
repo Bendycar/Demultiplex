@@ -29,6 +29,7 @@
     R3: 3328051
     
 ## Part 2
+**ALL ANSWERS IN PSEUDOCODE.MD**
 1. Define the problem
 2. Describe output
 3. Upload your [4 input FASTQ files](../TEST-input_FASTQ) and your [>=6 expected output FASTQ files](../TEST-output_FASTQ).
