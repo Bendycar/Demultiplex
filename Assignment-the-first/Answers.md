@@ -12,6 +12,12 @@
 
 2. Per-base NT distribution
     1. Use markdown to insert your 4 histograms here.
+
+    [R1 distribution](R1_distribution.png)
+    [R2 distribution](R2_distribution.png)
+    [R3 distribution](R3_distribution.png)
+    [R4 distribution](R4_distribution.png)
+
     2. I think I will plan on eliminating all index reads with a mean quality score less than 30. The primary rationale for such a high standard is that, given the size of our data set, I would rather throw away good data than keep bad data. I also considered the Hamming Distance between our indices, which was chosen to be relatively high. Considering that a QScore of 30 represents a .1% chance of error, I think the multiplicative probability of several base pairs switching on BOTH READS with this chance of error is quite low. 
 
     For downstream analysis, I would be less stringent in my cutoff value for biological reads. However, Illumina's website suggests a QScore cutoff of 30, which seems fairly reasonable to me. 
@@ -32,3 +38,4 @@
     2. Function headers (name and parameters)
     3. Test examples for individual functions
     4. Return statement
+
