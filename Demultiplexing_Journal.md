@@ -53,7 +53,7 @@ Read 1: Unknown with N's
 Read 2: Unknown with matched but invalid index
 Read 3: Mismatched but valid
 Read 4: Mismatched and invalid
-Read 5: Matched
+Read 5: Matched but one record below QScore cutoff
 
 The last thing I did today was write my python script for part 1 of the assignment, which creates figures for the average quality distribution of each read. I ran this sbatch script:
 

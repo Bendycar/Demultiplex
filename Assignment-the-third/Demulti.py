@@ -84,7 +84,7 @@ def open_files_for_writing(indices: set) -> tuple: #Tuple of two dictionaries, o
     R2_files = {}
 
     for index in indices:
-        R1_files[index] = open(f"R1_{index}.fastq", "w")
+        R1_files[index] = open(f"R1_{index}.fastq", "w") #NEED TO MODIFY TO OPEN IN OUTPUT DIRECTORY
         R2_files[index] = open(f"R2_{index}.fastq", "w")
     
     R1_files['Hopped'] = open(f"R1_Hopped.fastq", "w")
@@ -106,17 +106,14 @@ def close_all_files(R1_files: dict, R2_files: dict) -> None:
         file_handle.close()
 
 
-def append_indices(Header: str, Index1: str, Index2: str) -> str:
-    '''Appends Index 1 and the reverse complement of Index 2 to the header of the given record.
-    Returns the modified header'''
-    if matched == True or hopped == True: #Quickly gets the RC Index from the dictionary if it is a valid index
-        RC_Index2 = RC_index_set[Index2]
-        Header += f"_{Index1}_{RC_Index2}"
-    else: #Manually create RC if it's not a valid index that we already have stored
-        RC_Index2 = reverse_complement(Index2)
-        Header += f"_{Index1}_{RC_Index2}"
+def append_indices(record: list, Index1: str, Index2: str) -> list:
+    '''Appends Index 1 and Index 2 (MUST ALREADY BE RC) to the header of the given record.
+    Returns the same record with modified header'''
+    Header = record[0]
+    Header += f"_{Index1}_{Index2}"
+    record[0] = Header
 
-    return Header
+    return record
 
 def write_record(record1: list, record2: list, Index: str) -> None:
     '''Writes to the appropriate R1 and R2 files based on the index and global variables related to matching status".
@@ -192,7 +189,7 @@ with open(R1, "r") as fh1, open(R2, "r") as fh2, open(R3, "r") as fh3, open(R4, 
         record3 = [fh3.readline().strip() for i in range(4)]
         record4 = [fh4.readline().strip() for i in range(4)]
 
-        if not record1[0] or not record2[0] or not record3[0] or not record4[0]: #This line feels kinda sketchy, will test it thoroughly
+        if not record1[0] or not record2[0] or not record3[0] or not record4[0]: #This line feels kinda sketchy, will test it thoroughly / ask Leslie
             break
 
         if record2[1] not in index_set or record3[1] not in RC_index_set: #First check if either index is unknown
@@ -211,8 +208,8 @@ with open(R1, "r") as fh1, open(R2, "r") as fh2, open(R3, "r") as fh3, open(R4, 
             errors += 1
         
 
-        append_indices(record1[0], record2[1], RC_index2)
-        append_indices(record4[0], record2[1], RC_index2)
+        append_indices(record1, record2[1], RC_index2)
+        append_indices(record4, record2[1], RC_index2)
 
         write_record(record1, record4, record2[1])
         update_counts(record2[1], RC_index2)
@@ -223,6 +220,8 @@ with open(R1, "r") as fh1, open(R2, "r") as fh2, open(R3, "r") as fh3, open(R4, 
         record4 = []
 
 close_all_files(R1_files, R2_files)
+
+print(errors)
 #output_stats(matched_counts, hopped_counts, unknown_counts, errors)
 
 #Notes to self 8/3/24: Should clean up main code by using variables instead of constantly referencing the list
