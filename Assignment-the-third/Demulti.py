@@ -150,27 +150,27 @@ def output_stats(matched_counts: dict, hopped_counts: dict, unknown_counts: dict
     matched_reads = sum(matched_counts.values())
     hopped_reads = sum(hopped_counts.values())
     unknown_reads = unknown_counts['Unknown']
-    low_QScore_reads = unknown_counts['Low Quality']
+    low_QScore_reads = unknown_counts['Low_QScore']
     total_reads: int = matched_reads + hopped_reads + unknown_reads + low_QScore_reads 
 
-    with open(f"{output}/output_stats_cutoff_{QScore_cutoff}") as fh:
-        fh.write("GENERAL STATISTICS:")
-        fh.write(f"Total Reads: {total_reads}")
-        fh.write(f"Number of matched-index reads: {matched_reads}")
-        fh.write(f"Number of index-hopped reads: {hopped_reads}")
-        fh.write(f"Number of unknown index reads: {unknown_reads}")
-        fh.write(f"Number of reads eliminated due to index QScore cutoff: {low_QScore_reads}")
-        fh.write(f"Percentage of matched-index reads: {({matched_reads} / {total_reads}) * 100}") # type: ignore
-        fh.write(f"Percentage of hopped-index reads: {({hopped_reads} / {total_reads}) * 100}") # type: ignore
-        fh.write(f"Percentage of unknown-index reads: {({unknown_reads} / {total_reads}) * 100}") # type: ignore
-        fh.write(f"Percentage of low quality-index reads: {({low_QScore_reads} / {total_reads}) * 100}") # type: ignore
+    with open(f"{output}/output_stats_cutoff_{QScore_cutoff}.md", "w") as fh:
+        fh.write("GENERAL STATISTICS:\n")
+        fh.write(f"Total Reads: {total_reads}\n")
+        fh.write(f"Number of matched-index reads: {matched_reads}\n")
+        fh.write(f"Number of index-hopped reads: {hopped_reads}\n")
+        fh.write(f"Number of unknown index reads: {unknown_reads}\n")
+        fh.write(f"Number of reads eliminated due to index QScore cutoff: {low_QScore_reads}\n")
+        fh.write(f"Percentage of matched-index reads: {matched_reads / total_reads * 100}\n") # type: ignore
+        fh.write(f"Percentage of hopped-index reads: {hopped_reads / total_reads * 100}\n") # type: ignore
+        fh.write(f"Percentage of unknown-index reads: {unknown_reads / total_reads * 100}\n") # type: ignore
+        fh.write(f"Percentage of low quality-index reads: {low_QScore_reads / total_reads * 100}\n") # type: ignore
         fh.write("\nPER INDEX STATISTICS:\n")
-        fh.write("Reads mapped per valid index pair:")
+        fh.write("Reads mapped per valid index pair:\n")
         for index in matched_counts:
-            fh.write(f"{index}: {matched_counts[index]}")
-        fh.write("Reads mapped per hopped index pair:")
+            fh.write(f"{index}: {matched_counts[index]}\n")
+        fh.write("Reads mapped per hopped index pair:\n")
         for index in hopped_counts:
-            fh.write(f"{index}: {hopped_counts[index]}")
+            fh.write(f"{index}: {hopped_counts[index]}\n")
         fh.write(f"Total unknown or low quality indices: {low_QScore_reads + unknown_reads}")
 
 
@@ -178,15 +178,17 @@ def update_counts(index1: str, index2: str) -> None:
     '''Takes index 1 and RC index 2, checks global booleans to see which case we're in then updates counts accordingly'''
     
     if unknown == True:
-        if 'Unknown' in unknown_counts:
-            unknown_counts['Unknown'] += 1
+        if low_QScore == True:
+            if 'Low_QScore' in unknown_counts:
+                unknown_counts['Low_QScore'] += 1
+            else:
+                unknown_counts['Low_QScore'] = 1
         else:
-            unknown_counts['Unknown'] = 1
-    elif low_QScore == True: #Putting low quality indices in unknown bucket, but counting them separately so I can report separately
-        if 'Low Quality' in unknown_counts:
-            unknown_counts['Low Quality'] += 1
-        else:
-            unknown_counts['Low Quality'] = 1    
+            if 'Unknown' in unknown_counts:
+                unknown_counts['Unknown'] += 1
+            else:
+                unknown_counts['Unknown'] = 1
+        
     elif hopped == True:
         if (index1, index2) in hopped_counts:
             hopped_counts[index1, index2] += 1
@@ -228,7 +230,8 @@ with open(R1, "r") as fh1, open(R2, "r") as fh2, open(R3, "r") as fh3, open(R4, 
             unknown = True
             RC_index2 = reverse_complement(index2)
         elif average_QScore(record2[3]) < QScore_cutoff or average_QScore(record3[3]) < QScore_cutoff: #Next check if indices are known but poor quality
-            low__QScore = True 
+            unknown = True
+            low_QScore = True 
             RC_index2 = reverse_complement(index2)
         elif RC_index_set[index2] != index1: #Checking if indices match. This is the whole point of creating the dictionary, so that I can check by looking at the dict rather than calling the RC function
             RC_index2 = RC_index_set[index2]
@@ -243,8 +246,9 @@ with open(R1, "r") as fh1, open(R2, "r") as fh2, open(R3, "r") as fh3, open(R4, 
         append_indices(record1, index1, RC_index2)
         append_indices(record4, index1, RC_index2)
 
-        write_record(record1, record4, index1)
         update_counts(index1, RC_index2)
+        write_record(record1, record4, index1)
+
         
         record1 = []
         record2 = []
@@ -254,7 +258,7 @@ with open(R1, "r") as fh1, open(R2, "r") as fh2, open(R3, "r") as fh3, open(R4, 
 close_all_files(R1_files, R2_files)
 
 print(errors)
-#output_stats(matched_counts, hopped_counts, unknown_counts, errors)
+output_stats(matched_counts, hopped_counts, unknown_counts, errors)
 
 #Notes to self 8/3/24: Should clean up main code by using variables instead of constantly referencing the list
 #Getting key error in my append indices function, which is odd because it should never check the dictionary unless it's already been proven
