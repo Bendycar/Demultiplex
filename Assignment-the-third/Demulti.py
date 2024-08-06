@@ -148,16 +148,47 @@ def write_record(record1: list, record2: list, Index: str) -> None:
 def output_stats(matched_counts: dict, hopped_counts: dict, unknown_counts: dict, errors: int) -> None:
 
     '''Creates output file with formatted display of relevant statistics'''
-    pass
+    matched_reads = sum(matched_counts.values())
+    hopped_reads = sum(hopped_counts.values())
+    unknown_reads = unknown_counts['Unknown']
+    low_QScore_reads = unknown_counts['Low_QScore']
+    total_reads: int = matched_reads + hopped_reads + unknown_reads + low_QScore_reads 
+
+    with open(f"{output}/output_stats_cutoff_{QScore_cutoff}.md", "w") as fh:
+        fh.write("GENERAL STATISTICS:\n")
+        fh.write(f"Total Reads: {total_reads}\n")
+        fh.write(f"Number of matched-index reads: {matched_reads}\n")
+        fh.write(f"Number of index-hopped reads: {hopped_reads}\n")
+        fh.write(f"Number of unknown index reads: {unknown_reads}\n")
+        fh.write(f"Number of reads eliminated due to index QScore cutoff: {low_QScore_reads}\n")
+        fh.write(f"Percentage of matched-index reads: {matched_reads / total_reads * 100}\n") # type: ignore
+        fh.write(f"Percentage of hopped-index reads: {hopped_reads / total_reads * 100}\n") # type: ignore
+        fh.write(f"Percentage of unknown-index reads: {unknown_reads / total_reads * 100}\n") # type: ignore
+        fh.write(f"Percentage of low quality-index reads: {low_QScore_reads / total_reads * 100}\n") # type: ignore
+        fh.write("\nPER INDEX STATISTICS:\n")
+        fh.write("Reads mapped per valid index pair:\n")
+        for index in matched_counts:
+            fh.write(f"{index}: {matched_counts[index]}\n")
+        fh.write("Reads mapped per hopped index pair:\n")
+        for index in hopped_counts:
+            fh.write(f"{index}: {hopped_counts[index]}\n")
+        fh.write(f"Total unknown or low quality indices: {low_QScore_reads + unknown_reads}")
+
 
 def update_counts(index1: str, index2: str) -> None:
     '''Takes index 1 and RC index 2, checks global booleans to see which case we're in then updates counts accordingly'''
     
     if unknown == True:
-        if 'Unknown' in unknown_counts:
-            unknown_counts['Unknown'] += 1
+        if low_QScore == True:
+            if 'Low_QScore' in unknown_counts:
+                unknown_counts['Low_QScore'] += 1
+            else:
+                unknown_counts['Low_QScore'] = 1
         else:
-            unknown_counts['Unknown'] = 1
+            if 'Unknown' in unknown_counts:
+                unknown_counts['Unknown'] += 1
+            else:
+                unknown_counts['Unknown'] = 1
         
     elif hopped == True:
         if (index1, index2) in hopped_counts:
@@ -184,6 +215,7 @@ with open(R1, "r") as fh1, open(R2, "r") as fh2, open(R3, "r") as fh3, open(R4, 
         matched = False
         hopped = False
         unknown = False
+        low_QScore = False
         record1 = [fh1.readline().strip() for i in range(4)] #Calls the readline function 4 times -- easier for me to work with than modulo shenanigans
         record2 = [fh2.readline().strip() for i in range(4)]
         record3 = [fh3.readline().strip() for i in range(4)]
@@ -191,28 +223,33 @@ with open(R1, "r") as fh1, open(R2, "r") as fh2, open(R3, "r") as fh3, open(R4, 
 
         if not record1[0] or not record2[0] or not record3[0] or not record4[0]: #This line feels kinda sketchy, will test it thoroughly / ask Leslie
             break
+        
+        index1 = record2[1]
+        index2 = record3[1] 
 
-        if record2[1] not in index_set or record3[1] not in RC_index_set: #First check if either index is unknown
+        if index1 not in index_set or index2 not in RC_index_set: #First check if either index is unknown
             unknown = True
-            RC_index2 = reverse_complement(record3[1])
+            RC_index2 = reverse_complement(index2)
         elif average_QScore(record2[3]) < QScore_cutoff or average_QScore(record3[3]) < QScore_cutoff: #Next check if indices are known but poor quality
             unknown = True
-            RC_index2 = reverse_complement(record3[1])
-        elif RC_index_set[record3[1]] != record2[1]: #Checking if indices match. This is the whole point of creating the dictionary, so that I can check by looking at the dict rather than calling the RC function
-            RC_index2 = RC_index_set[record3[1]]
+            low_QScore = True 
+            RC_index2 = reverse_complement(index2)
+        elif RC_index_set[index2] != index1: #Checking if indices match. This is the whole point of creating the dictionary, so that I can check by looking at the dict rather than calling the RC function
+            RC_index2 = RC_index_set[index2]
             hopped = True
-        elif RC_index_set[record3[1]] == record2[1]:
-            RC_index2 = RC_index_set[record3[1]]
+        elif RC_index_set[index2] == index1: #This seems repetitive, but not sure how I can eliminate it...
+            RC_index2 = RC_index_set[index2]
             matched = True
         else:
             errors += 1
         
 
-        append_indices(record1, record2[1], RC_index2)
-        append_indices(record4, record2[1], RC_index2)
+        append_indices(record1, index1, RC_index2)
+        append_indices(record4, index1, RC_index2)
 
-        write_record(record1, record4, record2[1])
-        update_counts(record2[1], RC_index2)
+        update_counts(index1, RC_index2)
+        write_record(record1, record4, index1)
+
         
         record1 = []
         record2 = []
@@ -222,7 +259,7 @@ with open(R1, "r") as fh1, open(R2, "r") as fh2, open(R3, "r") as fh3, open(R4, 
 close_all_files(R1_files, R2_files)
 
 print(errors)
-#output_stats(matched_counts, hopped_counts, unknown_counts, errors)
+output_stats(matched_counts, hopped_counts, unknown_counts, errors)
 
 #Notes to self 8/3/24: Should clean up main code by using variables instead of constantly referencing the list
 #Getting key error in my append indices function, which is odd because it should never check the dictionary unless it's already been proven
