@@ -209,7 +209,7 @@ unknown_counts = {}
 errors = 0 #Increments only if something weird happens, should ideally be zero at the end
 R1_files, R2_files = open_files_for_writing(index_set)
 
-with open(R1, "r") as fh1, open(R2, "r") as fh2, open(R3, "r") as fh3, open(R4, "r") as fh4:
+with gzip.open(R1, "rt") as fh1, gzip.open(R2, "rt") as fh2, gzip.open(R3, "rt") as fh3, gzip.open(R4, "rt") as fh4:
     while True:
         matched = False
         hopped = False
