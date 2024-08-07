@@ -77,3 +77,29 @@ UnicodeDecodeError: 'utf-8' codec can't decode byte 0x8b in position 1: invalid 
 Command exited with non-zero status 1
 
 Even googling this didn't reveal much.... will ask Leslie tomorrow!
+
+8/6/24:
+
+I actually realized last night that this was just due to not opening the files with gzip! Need to be better about making note of what is different in test files vs real deal (ideally, there should be none... if I did this again I would gzip the test files!)
+I ran the script after making this fix, and it finished in about 2:07 and output what appeared to be reasonable results.
+I made one key modification for efficiency recommended by Leslie -- rewriting my reverse complement function to use a global variable for the complement dictionary, rather than recreating it every time.
+This dramatically cut down on the run time! I ran the script a final time, and received this slurm output:
+
+Command being timed: "./Demulti.py -R1 /projects/bgmp/shared/2017_sequencing/1294_S1_L008_R1_001.fastq.gz -R2 /$        User time (seconds): 4165.56
+        System time (seconds): 56.55
+        Percent of CPU this job got: 89%
+        Elapsed (wall clock) time (h:mm:ss or m:ss): 1:18:48
+
+Just making that change saved me nearly an hour!!! Big data is crazy.
+
+At this point, I think the assignment is done. My code is well commented and efficiently written -- there are a few things that I recognize could be trimmed just slightly, but to be honest I think any further modifications would just be mostly aesthetic and I'm a little afraid to mess with what works!
+
+Lastly, I discussed the prospect of creating figures with Leslie this morning, and decided against it.
+Perhaps this is just revealing of my lack of expertise in data visualization, but for this particular output I struggle to see how a figure would improve my understanding of the results.
+The primary output in my eyes is the percentage of reads matched/hopped/unknown, and this is just three percentages. I don't need a pie chart to understand what 84% looks like. 
+There might be something to be said for visualizing the number of reads mapped from each sample, but it is unclear to me what the actual meaning of this visualization would be. If, say sample 1 matched more reads than sample 2, does that actually mean anything? It might mean that index hopping was more likely to occur in index 2, but couldn't it also just reflect that more reads were read off sample 1 on the sequencer??
+
+
+I'm not saying that I think data visualization is pointless here, just that it would be lost on me with my current level of understanding.
+
+As far as I know, I don't know if anybody is making figures, but I would be curious to see what people do / have done!
